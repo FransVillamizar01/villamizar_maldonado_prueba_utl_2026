@@ -3,7 +3,7 @@
 ## Candidato
 Nombre: Frans Villamizar
 Email: fsvillamizar@unibioyaca.edu.co
-Fecha de entrega: [completa cuando entregues]
+Fecha de entrega: [NN]
 
 ## Instalación
 pip install -r requirements.txt
@@ -52,13 +52,19 @@ Cada partido es un objeto de nivel superior con estos campos:
 
 Nomenclador de municipios: disponible en nomenclator.json, cargado junto con la página principal — contiene el mapeo completo nombre-codigo para todos los municipios de Colombia.
 
-Headers necesarios: ninguno especial detectado más allá de los headers estándar del navegador (pendiente confirmar si el scraper programático los necesita).
+Headers necesarios: ninguno especial detectado más allá de los headers estándar del navegador.
 
 ## Municipios en la BD
-[completar tras correr el ETL]
+- TUNJA: 1361 filas
+- PAIPA: 1361 filas
+- SOGAMOSO: 1361 filas
+- DUITAMA: 1361 filas
+
+Total: 5444 filas | 83 partidos distintos identificados en la tabla `partidos`
 
 ## Hallazgos principales
-[completar tras correr las queries SQL]
+**Nota sobre nombres de partidos:** de los 83 partidos con votos en los 4 municipios, solo se confirmó el nombre real de 6 (Alianza Verde, Pacto Histórico, Centro Democrático, Conservador — Cámara y Senado según corresponda) cruzando con la tabla de colores del PDF de la prueba. El resto quedó registrado con el código de partido como placeholder (`PARTIDO_{codpar}`), ya que el nomenclador de la API usa una numeración distinta (ID nacional) a la que aparece en los resultados por municipio (índice de circunscripción), y no había forma directa de cruzarlos con certeza para todos los casos.
 
 ## Bonus implementados
-[completar al final] 
+- Flag --preflight en el scraper: muestra la lista de municipios a procesar sin hacer ninguna petición HTTP (Reto 1.2, +3 pts)
+- 3 índices SQLite con justificación explícita en schema.sql: idx_resultados_municipio, idx_resultados_codpar, idx_resultados_puesto (Reto 2.1, +2 pts)
