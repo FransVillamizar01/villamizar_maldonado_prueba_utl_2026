@@ -163,10 +163,19 @@ def main():
             logging.warning(f"Municipio desconocido, se omite: {m}")
 
     if args.preflight:
-        logging.info("Modo preflight: consultando nomenclador para contar puestos (sin descargar resultados)")
+        logging.info("Modo preflight: consultando nomenclador y contando filas reales (sin guardar en BD)")
         puestos_por_municipio = obtener_puestos_por_municipio(municipios_validos)
-        for municipio, puestos in puestos_por_municipio.items():
-            print(f"{municipio}: {len(puestos)} puestos encontrados (preflight, sin descargar resultados)")
+
+        for municipio, codigos_puesto in puestos_por_municipio.items():
+            total_filas_estimadas = 0
+            for codigo_puesto in codigos_puesto:
+                for corporacion in ["CA", "SE"]:
+                    url = construir_url_puesto(codigo_puesto, corporacion)
+                    data = fetch_con_retry(url)
+                    filas = parsear_resultados(data, municipio, corporacion, codigo_puesto)
+                    total_filas_estimadas += len(filas)
+
+            print(f"{municipio}: {len(codigos_puesto)} puestos | {total_filas_estimadas} filas estimadas (preflight, sin guardar en BD)")
         return
 
     conn = sqlite3.connect("db/puestos_2026.db")

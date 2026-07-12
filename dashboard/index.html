@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Boletín Electoral — Boyacá 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #12161C;
+    --panel: #1B2029;
+    --panel-hi: #212733;
+    --line: #2C333F;
+    --gold: #C89B3C;
+    --gold-dim: #8A6E2C;
+    --text: #E8E6E0;
+    --text-dim: #94A0AF;
+    --verde: #007C34;
+    --pacto: #7B2D8B;
+    --cd: #1E477D;
+    --conservador: #E07B00;
+  }
+  [data-theme="light"] {
+    --ink: #F1EFE9;
+    --panel: #FFFFFF;
+    --panel-hi: #FAF8F3;
+    --line: #DDD8CC;
+    --text: #1B1B1B;
+    --text-dim: #6B6558;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--text);
+    font-family: "Inter", system-ui, sans-serif;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 2.5rem 1.75rem 4rem; }
+
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .subhead { color: var(--text-dim); margin: 0; font-size: 0.95rem; }
+  .masthead-actions { display: flex; gap: 0.6rem; align-items: center; }
+  .btn {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    padding: 0.55rem 1rem;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .btn:hover { border-color: var(--gold); }
+  .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .acta {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.75rem;
+    margin-bottom: 1.75rem;
+  }
+  .acta-tag {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    background: var(--gold);
+    padding: 0.2rem 0.55rem;
+    border-radius: 2px;
+    margin-bottom: 0.9rem;
+  }
+  [data-theme="light"] .acta-tag { color: #fff; }
+  .acta h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin: 0 0 1.25rem;
+  }
+  label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  select {
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: var(--panel-hi);
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    min-width: 220px;
+  }
+  .lider-se {
+    display: inline-block;
+    margin-left: 0.9rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 3px;
+    color: #fff;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    vertical-align: middle;
+  }
+  canvas { max-height: 400px; }
+  .loading { color: var(--text-dim); font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; }
+  .foot-note {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+    margin-top: 0.5rem;
+  }
+  .site-footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .site-footer p {
+    margin: 0.25rem 0;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+  .site-footer .contact { color: var(--gold); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <p class="eyebrow">UTL · Senado de la República · Boletín 2026</p>
+      <h1>Boletín Electoral — Boyacá</h1>
+      <p class="subhead">Tunja · Paipa · Sogamoso · Duitama — Cámara y Senado, resultado por puesto de votación</p>
+    </div>
+    <div class="masthead-actions">
+      <button id="darkModeToggle" class="btn">MODO CLARO</button>
+      <button id="exportCsvBtn" class="btn">↓ EXPORTAR CSV</button>
+    </div>
+  </div>
+
+  <div class="acta">
+    <span class="acta-tag">ACTA 01</span>
+    <h2>Comparativo — Votos Cámara por municipio</h2>
+    <canvas id="comparativoChart"></canvas>
+  </div>
+
+  <div class="acta">
+    <span class="acta-tag">ACTA 02</span>
+    <h2>Detalle por municipio</h2>
+    <label for="municipioSelect">Municipio</label>
+    <select id="municipioSelect"></select>
+    <span id="liderSeLabel"></span>
+    <canvas id="municipioChart"></canvas>
+  </div>
+
+  <div class="acta">
+    <span class="acta-tag">ACTA 03</span>
+    <h2>Arrastre electoral — Alianza Verde (CA→SE) por puesto</h2>
+    <label for="arrastreSelect">Municipio</label>
+    <select id="arrastreSelect"></select>
+    <canvas id="arrastreChart"></canvas>
+  </div>
+
+  <p class="loading" id="loadingMsg">Cargando data.json...</p>
+  <p class="foot-note">Fuente: resultadospreccongreso2026.registraduria.gov.co · Pipeline UTL Senado 2026</p>
+
+  <footer class="site-footer">
+    <p>© 2026 Frans Sebastián Villamizar Maldonado. Todos los derechos reservados.</p>
+    <p class="contact">fransvillamizarma1409@gmail.com · 312 376 1161</p>
+  </footer>
+</div>
+
+<script>
+const COLORES_PARTIDO = {
+  5: "#007C34", 57: "#007C34",
+  87: "#7B2D8B", 92: "#7B2D8B",
+  10: "#1E477D",
+  2: "#E07B00"
+};
+function colorPartido(codpar) {
+  return COLORES_PARTIDO[codpar] || "#6B7280";
+}
+
+const TEMA = {
+  dark:  { color: "#94A0AF", grid: "#2C333F" },
+  light: { color: "#6B6558", grid: "#DDD8CC" }
+};
+Chart.defaults.font.family = "Inter, sans-serif";
+Chart.defaults.color = TEMA.dark.color;
+Chart.defaults.borderColor = TEMA.dark.grid;
+
+let dashboardData = null;
+let comparativoChartInstance = null;
+let municipioChartInstance = null;
+let arrastreChartInstance = null;
+
+fetch("data.json")
+  .then(r => r.json())
+  .then(data => {
+    dashboardData = data;
+    document.getElementById("loadingMsg").style.display = "none";
+    renderComparativo(data);
+    setupSelectores(data);
+  })
+  .catch(err => {
+    document.getElementById("loadingMsg").textContent = "Error cargando data.json: " + err;
+  });
+
+function renderComparativo(data) {
+  const ctx = document.getElementById("comparativoChart");
+  if (comparativoChartInstance) comparativoChartInstance.destroy();
+  comparativoChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: data.comparativo_ca.map(d => d.municipio),
+      datasets: [{
+        label: "Votos CA totales",
+        data: data.comparativo_ca.map(d => d.votos),
+        backgroundColor: "#C89B3C",
+        borderRadius: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
+function setupSelectores(data) {
+  const municipioSelect = document.getElementById("municipioSelect");
+  const arrastreSelect = document.getElementById("arrastreSelect");
+
+  data.municipios.forEach(m => {
+    const opt1 = document.createElement("option");
+    opt1.value = m; opt1.textContent = m;
+    municipioSelect.appendChild(opt1);
+
+    const opt2 = document.createElement("option");
+    opt2.value = m; opt2.textContent = m;
+    arrastreSelect.appendChild(opt2);
+  });
+
+  municipioSelect.addEventListener("change", () => renderMunicipio(municipioSelect.value));
+  arrastreSelect.addEventListener("change", () => renderArrastre(arrastreSelect.value));
+
+  renderMunicipio(data.municipios[0]);
+  renderArrastre(data.municipios[0]);
+}
+
+function renderMunicipio(municipio) {
+  const top10 = dashboardData.top_candidatos[municipio] || [];
+  const lider = dashboardData.partido_lider_se[municipio];
+
+  document.getElementById("liderSeLabel").innerHTML =
+    `<span class="lider-se" style="background:${colorPartido(lider ? lider.codpar : null)}">
+      LÍDER SE: ${lider ? lider.nombre : "N/A"} · ${lider ? lider.votos.toLocaleString() : 0} votos
+    </span>`;
+
+  const ctx = document.getElementById("municipioChart");
+  if (municipioChartInstance) municipioChartInstance.destroy();
+
+  municipioChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: top10.map(c => c.candidato),
+      datasets: [{
+        label: "Votos CA",
+        data: top10.map(c => c.votos),
+        backgroundColor: top10.map(c => colorPartido(c.codpar)),
+        borderRadius: 2
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { x: { beginAtZero: true } }
+    }
+  });
+}
+
+function renderArrastre(municipio) {
+  const puestos = dashboardData.arrastre[municipio] || [];
+  const ctx = document.getElementById("arrastreChart");
+  if (arrastreChartInstance) arrastreChartInstance.destroy();
+
+  arrastreChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: puestos.map(p => p.puesto.slice(-4)),
+      datasets: [{
+        label: "Ratio arrastre CA→SE",
+        data: puestos.map(p => p.ratio),
+        backgroundColor: "#007C34",
+        borderRadius: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true } },
+      scales: { y: { beginAtZero: true } }
+    },
+    plugins: [{
+      id: "lineaReferencia",
+      afterDraw: (chart) => {
+        const yScale = chart.scales.y;
+        const yPixel = yScale.getPixelForValue(1.0);
+        const c = chart.ctx;
+        c.save();
+        c.strokeStyle = "#C89B3C";
+        c.setLineDash([6, 4]);
+        c.beginPath();
+        c.moveTo(chart.chartArea.left, yPixel);
+        c.lineTo(chart.chartArea.right, yPixel);
+        c.stroke();
+        c.restore();
+      }
+    }]
+  });
+}
+
+const darkBtn = document.getElementById("darkModeToggle");
+darkBtn.addEventListener("click", () => {
+  const esClaroActual = document.documentElement.getAttribute("data-theme") === "light";
+  if (esClaroActual) {
+    document.documentElement.removeAttribute("data-theme");
+    darkBtn.textContent = "MODO CLARO";
+    Chart.defaults.color = TEMA.dark.color;
+    Chart.defaults.borderColor = TEMA.dark.grid;
+  } else {
+    document.documentElement.setAttribute("data-theme", "light");
+    darkBtn.textContent = "MODO OSCURO";
+    Chart.defaults.color = TEMA.light.color;
+    Chart.defaults.borderColor = TEMA.light.grid;
+  }
+  renderComparativo(dashboardData);
+  renderMunicipio(document.getElementById("municipioSelect").value);
+  renderArrastre(document.getElementById("arrastreSelect").value);
+});
+
+document.getElementById("exportCsvBtn").addEventListener("click", () => {
+  if (!dashboardData) return;
+  const municipioActual = document.getElementById("municipioSelect").value;
+  let csv = "";
+
+  csv += "=== COMPARATIVO VOTOS CA POR MUNICIPIO ===\n";
+  csv += "municipio,votos_ca\n";
+  dashboardData.comparativo_ca.forEach(d => { csv += `${d.municipio},${d.votos}\n`; });
+  csv += "\n";
+
+  csv += `=== TOP 10 CANDIDATOS CA - ${municipioActual} ===\n`;
+  csv += "candidato,codpar,votos\n";
+  (dashboardData.top_candidatos[municipioActual] || []).forEach(c => {
+    csv += `"${c.candidato}",${c.codpar},${c.votos}\n`;
+  });
+  csv += "\n";
+
+  const lider = dashboardData.partido_lider_se[municipioActual];
+  csv += `=== PARTIDO LIDER SENADO - ${municipioActual} ===\n`;
+  csv += "partido,votos\n";
+  if (lider) csv += `"${lider.nombre}",${lider.votos}\n`;
+  csv += "\n";
+
+  csv += `=== ARRASTRE VERDE CA->SE POR PUESTO - ${municipioActual} ===\n`;
+  csv += "puesto,votos_ca,votos_se,ratio\n";
+  (dashboardData.arrastre[municipioActual] || []).forEach(p => {
+    csv += `${p.puesto},${p.votos_ca},${p.votos_se},${p.ratio}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `dashboard_export_${municipioActual}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
