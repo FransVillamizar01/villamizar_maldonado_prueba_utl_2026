@@ -143,7 +143,12 @@ def main():
             total_insertadas += insertadas
             total_omitidas += omitidas
 
-        logging.info(f"{municipio} completado: {total_insertadas} insertadas, {total_omitidas} omitidas")
+        logging.info(f"{municipio} completado: {total_insertadas} insertadas, {total_omitidas} omitidas")   
+        conn.execute(
+            "INSERT INTO carga_log (municipio, filas_insertadas, filas_omitidas) VALUES (?, ?, ?)",
+            (municipio, total_insertadas, total_omitidas)
+        )
+        conn.commit()
 
     conn.close()
     logging.info("Proceso finalizado.")
