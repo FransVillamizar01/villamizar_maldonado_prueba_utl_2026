@@ -2,7 +2,7 @@
 
 ## Candidato
 Nombre: Frans Villamizar
-Email: fsvillamizar@unibioyaca.edu.co
+Email: fransvillamizarma1409@gmail.com
 Fecha de entrega: [NN]
 
 ## Instalación
