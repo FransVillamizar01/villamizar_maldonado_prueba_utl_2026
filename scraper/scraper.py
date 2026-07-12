@@ -15,6 +15,47 @@ MUNICIPIOS = {
     "DUITAMA": "0700079",
 }
 
+def obtener_puestos_por_municipio(municipios):
+    """
+    Descarga el nomenclador y navega el árbol territorial para obtener,
+    por cada municipio, la lista de códigos de 'local' (puesto de votación).
+    Retorna: {"TUNJA": ["0700001010001", "0700001010002", ...], ...}
+    """
+    logging.info("Descargando nomenclador para mapear puestos de votación...")
+    nomenclator_url = f"{BASE_URL}/json/nomenclator.json"
+    data = fetch_con_retry(nomenclator_url)
+    if not data:
+        logging.error("No se pudo descargar el nomenclador. Abortando.")
+        return {}
+
+    ambitos = data["amb"][0]["ambitos"]
+    por_indice = {a["i"]: a for a in ambitos}
+
+    resultado = {}
+    for municipio in municipios:
+        codigo_municipio = MUNICIPIOS[municipio]
+        nodo_municipio = next(
+            (a for a in ambitos if a.get("l") == 3 and a.get("c") == codigo_municipio),
+            None
+        )
+        if not nodo_municipio:
+            logging.warning(f"No se encontró el municipio {municipio} en el nomenclador")
+            continue
+
+        puestos = []
+        indices_zonas = nodo_municipio["h"][0]["p"]
+        for idx_zona in indices_zonas:
+            zona = por_indice[idx_zona]
+            indices_locales = zona["h"][0]["p"]
+            for idx_local in indices_locales:
+                local = por_indice[idx_local]
+                puestos.append(local["c"])
+
+        resultado[municipio] = puestos
+        logging.info(f"{municipio}: {len(puestos)} puestos encontrados")
+
+    return resultado
+
 def fetch_con_retry(url, intentos=3):
     """
     Intenta descargar la URL hasta 'intentos' veces.
@@ -34,18 +75,17 @@ def fetch_con_retry(url, intentos=3):
     logging.error(f"No se pudo obtener {url} después de {intentos} intentos")
     return None
 
-def construir_url(municipio, corporacion):
+def construir_url_puesto(codigo_puesto, corporacion):
     """
-    Arma la URL exacta según el patrón real descubierto en DevTools:
-    /json/ACT/{corporacion}/{codigo_divipola}.json
+    Arma la URL para un puesto de votación específico (código de 13 dígitos):
+    /json/ACT/{corporacion}/{codigo_puesto}.json
     """
-    codigo = MUNICIPIOS[municipio]
-    return f"{BASE_URL}/json/ACT/{corporacion}/{codigo}.json"
+    return f"{BASE_URL}/json/ACT/{corporacion}/{codigo_puesto}.json"
 
 
-def parsear_resultados(data, municipio, corporacion):
+def parsear_resultados(data, municipio, corporacion, codigo_puesto):
     """
-    Recibe el JSON crudo completo (con camaras -> partotabla -> act -> cantotabla)
+    Recibe el JSON crudo de UN puesto específico (con camaras -> partotabla -> act -> cantotabla)
     y lo convierte en una lista de filas simples, listas para SQLite.
     """
     filas = []
@@ -63,13 +103,12 @@ def parsear_resultados(data, municipio, corporacion):
             candidatos = partido.get("cantotabla", [])
 
             for cand in candidatos:
-                puesto = cand.get("amb", "")
                 candidato_nombre = f"{cand.get('nomcan','')} {cand.get('apecan','')}".strip()
                 votos = int(cand.get("vot", 0) or 0)
 
                 filas.append((
                     municipio,
-                    puesto,
+                    codigo_puesto,
                     corporacion,
                     codpar,
                     candidato_nombre,
@@ -118,32 +157,38 @@ def main():
                          help="Solo muestra conteo, no descarga ni guarda nada")
     args = parser.parse_args()
 
+    municipios_validos = [m for m in args.municipios if m in MUNICIPIOS]
+    for m in args.municipios:
+        if m not in MUNICIPIOS:
+            logging.warning(f"Municipio desconocido, se omite: {m}")
+
     if args.preflight:
-        logging.info("Modo preflight: mostrando municipios a procesar (sin descargar)")
-        for municipio in args.municipios:
-            print(f"{municipio}: pendiente de descarga (preflight, sin datos aún)")
+        logging.info("Modo preflight: consultando nomenclador para contar puestos (sin descargar resultados)")
+        puestos_por_municipio = obtener_puestos_por_municipio(municipios_validos)
+        for municipio, puestos in puestos_por_municipio.items():
+            print(f"{municipio}: {len(puestos)} puestos encontrados (preflight, sin descargar resultados)")
         return
 
     conn = sqlite3.connect("db/puestos_2026.db")
     crear_tabla_si_no_existe(conn)
 
-    for municipio in args.municipios:
-        if municipio not in MUNICIPIOS:
-            logging.warning(f"Municipio desconocido, se omite: {municipio}")
-            continue
+    puestos_por_municipio = obtener_puestos_por_municipio(municipios_validos)
 
-        logging.info(f"Procesando {municipio}...")
+    for municipio, codigos_puesto in puestos_por_municipio.items():
+        logging.info(f"Procesando {municipio} ({len(codigos_puesto)} puestos)...")
         total_insertadas, total_omitidas = 0, 0
 
-        for corporacion in ["CA", "SE"]:
-            url = construir_url(municipio, corporacion)
-            data = fetch_con_retry(url)
-            filas = parsear_resultados(data, municipio, corporacion)
-            insertadas, omitidas = guardar_filas(conn, filas)
-            total_insertadas += insertadas
-            total_omitidas += omitidas
+        for codigo_puesto in codigos_puesto:
+            for corporacion in ["CA", "SE"]:
+                url = construir_url_puesto(codigo_puesto, corporacion)
+                data = fetch_con_retry(url)
+                filas = parsear_resultados(data, municipio, corporacion, codigo_puesto)
+                insertadas, omitidas = guardar_filas(conn, filas)
+                total_insertadas += insertadas
+                total_omitidas += omitidas
 
-        logging.info(f"{municipio} completado: {total_insertadas} insertadas, {total_omitidas} omitidas")   
+        logging.info(f"{municipio} completado: {total_insertadas} insertadas, {total_omitidas} omitidas")
+
         conn.execute(
             "INSERT INTO carga_log (municipio, filas_insertadas, filas_omitidas) VALUES (?, ?, ?)",
             (municipio, total_insertadas, total_omitidas)
