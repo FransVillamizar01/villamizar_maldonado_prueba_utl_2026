@@ -1,12 +1,17 @@
-import requests
+import sqlite3
 
-data = requests.get('https://resultadospreccongreso2026.registraduria.gov.co/json/nomenclator.json').json()
-ambitos = data['amb'][0]['ambitos']
-por_indice = {a['i']: a for a in ambitos}
+conn = sqlite3.connect('db/puestos_2026.db')
 
-# Tomamos el primer local de la primera zona de Tunja como muestra
-indices_locales_tunja_zona01 = [4541, 6251, 6422, 6982, 10346, 11581]
+resultado = conn.execute("""
+    SELECT candidato, codpar, SUM(votos) as total_votos
+    FROM resultados
+    WHERE corporacion = 'SE' AND candidato != 'SOLO POR LA LISTA'
+    GROUP BY candidato, codpar
+    ORDER BY total_votos DESC
+    LIMIT 20
+""").fetchall()
 
-for idx in indices_locales_tunja_zona01:
-    local = por_indice[idx]
-    print(local)
+for candidato, codpar, votos in resultado:
+    print(f"{candidato} (partido {codpar}): {votos} votos")
+
+conn.close()
