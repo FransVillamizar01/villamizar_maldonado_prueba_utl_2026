@@ -6,7 +6,7 @@ import sys
 # ============ SECCION META (edita con tus datos) ============
 META = {
     "nombre": "Frans Sebastian Villamizar Maldonado",
-    "email": "fsvillamizar@unibioyaca.edu.co",
+    "email": "fransvillamizarma1409@gmail.com",
     "repo_url": "https://github.com/FransVillamizar01/villamizar_maldonado_prueba_utl_2026"
 }
 # ==============================================================
