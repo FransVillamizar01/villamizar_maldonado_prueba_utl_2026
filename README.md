@@ -2,7 +2,7 @@
 
 ## Candidato
 Nombre: Frans Villamizar
-Email: fsvillamizar@unibioyaca.edu.co
+Email: fransvillamizarma1409@gmail.com
 Fecha de entrega: [NN]
 
 ## Instalación
@@ -10,11 +10,40 @@ pip install -r requirements.txt
 Python 3.x (verificar version con: python --version)
 
 ## Pipeline de ejecución
+
+Requisitos: Python 3.x instalado (verificar con python --version).
+Todos los comandos se ejecutan desde la carpeta raíz del proyecto (donde está este README).
+
+Paso 1 — Instalar dependencias
+pip install -r requirements.txt
+
+Paso 2 — Ejecutar el scraper (descarga resultados reales desde la API de la Registraduría y los guarda en db/puestos_2026.db)
 python scraper/scraper.py
+Tiempo estimado: 1-2 minutos (146 peticiones HTTP, 4 municipios x 73 puestos x 2 corporaciones).
+
+Variantes útiles:
+python scraper/scraper.py --municipios TUNJA PAIPA
+python scraper/scraper.py --preflight
+
+Paso 3 — Ejecutar el ETL (crea/actualiza tablas partidos y normaliza candidatos)
 python db/etl.py
+
+Paso 4 — Generar los datos del dashboard
 python dashboard/export_data.py
 python dashboard/generar_data_js.py
+
+Paso 5 — Generar las visualizaciones
+python viz/heatmap.py
+python viz/scatter.py
+
+Paso 6 — Generar el manifest de evaluación (valida 4/4 municipios, corre las 3 queries SQL, captura el resultado de scatter.py)
 python outputs/generar_manifest.py
+Antes de correr este paso, edite la sección META al inicio de outputs/generar_manifest.py con su nombre, email y URL de repositorio.
+
+Paso 7 — Ver el dashboard
+Abra dashboard/index.html directamente con doble clic (no requiere servidor).
+
+Tiempo total estimado del pipeline completo: 3-5 minutos.
 
 ## API
 
@@ -28,7 +57,7 @@ https://resultadospreccongreso2026.registraduria.gov.co/json/ACT/{corporacion}/{
 - ACT: constante (posiblemente indica "actual" o boletín vigente)
 
 Endpoint de nomenclador territorial: /json/nomenclator.json
-Contiene el árbol completo Departamento→Municipio→Zona→Puesto (campo `amb[0].ambitos`, con niveles `l`: 2=departamento, 3=municipio, 4=zona, 6=puesto). Cada nodo tiene un código `c` que se usa directo en el endpoint de resultados. Este archivo fue clave para descubrir la jerarquía completa y obtener los códigos de los puestos de votación individuales.
+Contiene el árbol completo Departamento→Municipio→Zona→Puesto (campo amb[0].ambitos, con niveles l: 2=departamento, 3=municipio, 4=zona, 6=puesto). Cada nodo tiene un código c que se usa directo en el endpoint de resultados. Este archivo fue clave para descubrir la jerarquía completa y obtener los códigos de los puestos de votación individuales.
 
 Códigos DIVIPOLA de los municipios objetivo:
 | Municipio | Código |
@@ -59,6 +88,8 @@ Nomenclador de municipios: disponible en nomenclator.json, contiene el mapeo com
 
 Headers necesarios: ninguno especial detectado más allá de los headers estándar del navegador.
 
+Sobre sample_data/: la carpeta se mantiene en la estructura del repositorio (con .gitkeep) conforme a los requisitos, pero no fue necesario utilizarla como fuente de datos. La API real de la Registraduría (resultadospreccongreso2026.registraduria.gov.co) respondió correctamente durante todo el desarrollo, permitiendo construir y probar el scraper directamente contra datos en vivo.
+
 ## Municipios en la BD
 - TUNJA: 35386 filas (26 puestos de votación)
 - PAIPA: 9527 filas (7 puestos de votación)
@@ -74,21 +105,21 @@ Total: 99353 filas | 83 partidos distintos identificados
 
 > Durante este diagnóstico se crearon 2 archivos temporales fuera de la estructura oficial del repo: `generar_favicon.py` (para generar el ícono de la pestaña en base64) y `prueba.html` (un HTML vacío usado para descartar que el error viniera del código del dashboard). Ambos se eliminaron del proyecto una vez completado el diagnóstico, ya que no forman parte de la entrega ni del pipeline oficial.
 
-**Nota sobre nivel de detalle:** inicialmente el endpoint de resultados por municipio (`/json/ACT/{corporacion}/{codigo_municipio}.json`) solo traía el consolidado a nivel de todo el municipio. Investigando la estructura de `nomenclator.json` se descubrió el árbol territorial completo (Departamento → Municipio → Zona → Puesto de votación), lo que permitió obtener el desglose real por puesto individual (código de 13 dígitos), tal como lo requiere la tarea 3.1.
+Nota sobre nivel de detalle: inicialmente el endpoint de resultados por municipio (/json/ACT/{corporacion}/{codigo_municipio}.json) solo traía el consolidado a nivel de todo el municipio. Investigando la estructura de nomenclator.json se descubrió el árbol territorial completo (Departamento → Municipio → Zona → Puesto de votación), lo que permitió obtener el desglose real por puesto individual (código de 13 dígitos), tal como lo requiere la tarea 3.1.
 
-**Nota sobre nombres de partidos:** de los 83 partidos con votos en los 4 municipios, solo se confirmó el nombre real de 6 (Alianza Verde, Pacto Histórico, Centro Democrático, Conservador — Cámara y Senado según corresponda) cruzando con la tabla de colores del PDF de la prueba. El resto quedó registrado con el código de partido como placeholder (`PARTIDO_{codpar}`), ya que el nomenclador nacional de partidos usa una numeración distinta (ID nacional) a la que aparece en los resultados por puesto (índice de circunscripción), y no había forma directa de cruzarlos con certeza para todos los casos.
+Nota sobre nombres de partidos: de los 83 partidos con votos en los 4 municipios, solo se confirmó el nombre real de 6 (Alianza Verde, Pacto Histórico, Centro Democrático, Conservador — Cámara y Senado según corresponda) cruzando con la tabla de colores del PDF de la prueba. El resto quedó registrado con el código de partido como placeholder (PARTIDO_{codpar}), ya que el nomenclador nacional de partidos usa una numeración distinta (ID nacional) a la que aparece en los resultados por puesto (índice de circunscripción), y no había forma directa de cruzarlos con certeza para todos los casos.
 
-**Sobre "SOLO POR LA LISTA" en la query de dominancia extrema (3.2):** de los 1248 casos de dominancia >60% encontrados, una parte significativa corresponde a votos marcados como "SOLO POR LA LISTA" (codcan=0), que representa a electores que votaron por el partido sin marcar un candidato específico — no es un error de los datos ni del scraper, es una categoría real del sistema de voto preferente colombiano. En mesas pequeñas donde solo hubo unos pocos votos para un partido y ninguno fue a un candidato individual, "SOLO POR LA LISTA" concentra automáticamente el 100% de esos votos. La query se dejó fiel a la definición literal del PDF ("un candidato concentra >60% de los votos de su partido"), ya que dentro de la estructura de datos de la API este registro es tratado como un candidato más (mismo nivel que los reales, con código propio).
+Sobre "SOLO POR LA LISTA" en la query de dominancia extrema (3.2): de los 1248 casos de dominancia >60% encontrados, una parte significativa corresponde a votos marcados como "SOLO POR LA LISTA" (codcan=0), que representa a electores que votaron por el partido sin marcar un candidato específico — no es un error de los datos ni del scraper, es una categoría real del sistema de voto preferente colombiano. En mesas pequeñas donde solo hubo unos pocos votos para un partido y ninguno fue a un candidato individual, "SOLO POR LA LISTA" concentra automáticamente el 100% de esos votos. La query se dejó fiel a la definición literal del PDF ("un candidato concentra >60% de los votos de su partido"), ya que dentro de la estructura de datos de la API este registro es tratado como un candidato más (mismo nivel que los reales, con código propio).
 
-**Por qué el top CA no siempre coincide con el top de atribución SE (bonus 3.3):** la atribución SE de un candidato depende de 2 factores multiplicados: (1) qué tan fuerte es el candidato dentro de su propio partido en Cámara, y (2) qué tan fuerte fue ese mismo partido en Senado en ese puesto. Un candidato puede ser el más votado de su partido en CA, pero si su partido tuvo un resultado débil en SE en ese puesto, su atribución baja proporcionalmente. Esto se ve reflejado en el top 5: "SOLO POR LA LISTA" (Duitama, partido 10) aparece en la posición #4 con 338.2 votos atribuidos, no porque sea un "candidato" fuerte individualmente, sino porque el partido 10 tuvo un resultado muy fuerte en Senado en ese puesto específico, y una porción grande de los votos de Cámara de ese partido fueron "solo por la lista" — inflando su atribución proporcional pese a no ser una persona real compitiendo por votos individuales.
+Por qué el top CA no siempre coincide con el top de atribución SE (bonus 3.3): la atribución SE de un candidato depende de 2 factores multiplicados: (1) qué tan fuerte es el candidato dentro de su propio partido en Cámara, y (2) qué tan fuerte fue ese mismo partido en Senado en ese puesto. Un candidato puede ser el más votado de su partido en CA, pero si su partido tuvo un resultado débil en SE en ese puesto, su atribución baja proporcionalmente. Esto se ve reflejado en el top 5: "SOLO POR LA LISTA" (Duitama, partido 10) aparece en la posición #4 con 338.2 votos atribuidos, no porque sea un "candidato" fuerte individualmente, sino porque el partido 10 tuvo un resultado muy fuerte en Senado en ese puesto específico, y una porción grande de los votos de Cámara de ese partido fueron "solo por la lista" — inflando su atribución proporcional pese a no ser una persona real compitiendo por votos individuales.
 
-**Correlación CA-SE por puesto de votación:** el análisis de los 73 puestos de votación muestra una correlación casi perfecta entre los votos totales de Cámara y Senado (r=0.999, pendiente=0.997), visible en viz/scatter_ca_se.png. Esto indica que el volumen de participación electoral es prácticamente idéntico entre ambas corporaciones dentro de un mismo puesto — es decir, casi la totalidad de quienes votaron por Cámara en un puesto también votaron por Senado ahí mismo, sin variaciones significativas de abstención diferencial entre corporaciones.
+Correlación CA-SE por puesto de votación: el análisis de los 73 puestos de votación muestra una correlación casi perfecta entre los votos totales de Cámara y Senado (r=0.999, pendiente=0.997), visible en viz/scatter_ca_se.png. Esto indica que el volumen de participación electoral es prácticamente idéntico entre ambas corporaciones dentro de un mismo puesto — es decir, casi la totalidad de quienes votaron por Cámara en un puesto también votaron por Senado ahí mismo, sin variaciones significativas de abstención diferencial entre corporaciones.
 
-**Sobre los colores de partido en el dashboard:** el PDF especifica colores obligatorios solo para 4 partidos (Alianza Verde, Pacto Histórico, Centro Democrático, Conservador). Estos se respetaron exactamente en el código (`COLORES_PARTIDO`), sin ninguna modificación, incluso al rediseñar la identidad visual general del dashboard. Los candidatos de partidos distintos a esos 4 se muestran en gris neutro para mantener el cumplimiento estricto de la paleta oficial sin inventar colores no especificados.
+Sobre los colores de partido en el dashboard: el PDF especifica colores obligatorios solo para 4 partidos (Alianza Verde, Pacto Histórico, Centro Democrático, Conservador). Estos se respetaron exactamente en el código (COLORES_PARTIDO), sin ninguna modificación, incluso al rediseñar la identidad visual general del dashboard. Los candidatos de partidos distintos a esos 4 se muestran en gris neutro para mantener el cumplimiento estricto de la paleta oficial sin inventar colores no especificados.
 
-**Sobre el rediseño visual del dashboard:** la primera versión del dashboard se construyó con un diseño funcional básico (tarjetas blancas, tipografía estándar) para validar que la lógica de datos, selectores y gráficas funcionara correctamente. Una vez confirmado que todo el contenido y los colores obligatorios de partido operaban bien, se rediseñó la identidad visual completa hacia un estilo de "boletín electoral oficial" (fondo oscuro tipo sala de resultados, tipografía serif/monoespaciada, acento dorado institucional), como mejora puramente estética orientada a dar una presentación más profesional. Ningún dato, cálculo, color de partido ni funcionalidad se modificó durante este cambio — únicamente la capa visual decorativa.
+Sobre el rediseño visual del dashboard: la primera versión del dashboard se construyó con un diseño funcional básico (tarjetas blancas, tipografía estándar) para validar que la lógica de datos, selectores y gráficas funcionara correctamente. Una vez confirmado que todo el contenido y los colores obligatorios de partido operaban bien, se rediseñó la identidad visual completa hacia un estilo de "boletín electoral oficial" (fondo oscuro tipo sala de resultados, tipografía serif/monoespaciada, acento dorado institucional), como mejora puramente estética orientada a dar una presentación más profesional. Ningún dato, cálculo, color de partido ni funcionalidad se modificó durante este cambio — únicamente la capa visual decorativa.
 
-**Sobre la carga de datos del dashboard sin servidor:** inicialmente el dashboard usaba `fetch("data.json")` para cargar los datos, lo cual requiere un servidor local (bloqueado por política CORS del navegador al abrir el archivo directamente). Se resolvió generando `dashboard/data.js` (mediante `dashboard/generar_data_js.py`), que declara los mismos datos como una variable de JavaScript (`const DASHBOARD_DATA = {...}`) cargada con una etiqueta `<script>` normal — esto permite que `index.html` funcione abriendo directamente con doble clic, sin servidor, tal como exige el PDF.
+Sobre la carga de datos del dashboard sin servidor: inicialmente el dashboard usaba fetch("data.json") para cargar los datos, lo cual requiere un servidor local (bloqueado por política CORS del navegador al abrir el archivo directamente). Se resolvió generando dashboard/data.js (mediante dashboard/generar_data_js.py), que declara los mismos datos como una variable de JavaScript (const DASHBOARD_DATA = {...}) cargada con una etiqueta <script> normal — esto permite que index.html funcione abriendo directamente con doble clic, sin servidor, tal como exige el PDF.
 
 ## Bonus implementados
 - Flag --preflight en el scraper: consulta la API real (vía nomenclador y peticiones por puesto) y cuenta las filas exactas que se insertarían, sin guardar nada en la base de datos (Reto 1.2, +3 pts)

@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "nombre": "Frans Sebastian Villamizar Maldonado",
+    "email": "fransvillamizarma1409@gmail.com",
+    "repo_url": "https://github.com/FransVillamizar01/villamizar_maldonado_prueba_utl_2026"
+  },
+  "municipios": [
+    "DUITAMA",
+    "PAIPA",
+    "SOGAMOSO",
+    "TUNJA"
+  ],
+  "municipios_check": "4/4",
+  "filas_por_tabla": {
+    "resultados": 99353,
+    "partidos": 83,
+    "carga_log": 14
+  },
+  "partido_lider_se": {
+    "DUITAMA": {
+      "partido": "PACTO HISTORICO (SE)",
+      "votos": 15423
+    },
+    "PAIPA": {
+      "partido": "ALIANZA VERDE (SE)",
+      "votos": 4161
+    },
+    "SOGAMOSO": {
+      "partido": "PACTO HISTORICO (SE)",
+      "votos": 13957
+    },
+    "TUNJA": {
+      "partido": "PACTO HISTORICO (SE)",
+      "votos": 20651
+    }
+  },
+  "sql_checks": {
+    "tarea_3_1": {
+      "status": "OK",
+      "filas": 73
+    },
+    "tarea_3_2": {
+      "status": "OK",
+      "filas": 1248
+    },
+    "tarea_3_3": {
+      "status": "OK",
+      "filas": 5
+    }
+  },
+  "scatter_output": "r=0.999 | pendiente=0.997 | n_mesas=73"
+}
