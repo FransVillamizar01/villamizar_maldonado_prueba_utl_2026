@@ -2,7 +2,7 @@
 
 ## Candidato
 Nombre: Frans Villamizar
-Email: fransvillamizarma1409@gmail.com
+Email: fsvillamizar@unibioyaca.edu.co
 Fecha de entrega: [NN]
 
 ## Instalación
@@ -69,6 +69,11 @@ Total: 99353 filas | 83 partidos distintos identificados
 
 ## Hallazgos principales
 
+> **⚠️ NOTA IMPORTANTE — Advertencia de consola al abrir index.html (no es un error del código):**
+> Al abrir `dashboard/index.html` directamente con doble clic (protocolo `file://`), Chrome/Edge muestran una advertencia genérica en consola: `Unsafe attempt to load URL... 'file:' URLs are treated as unique security origins`. Se verificó exhaustivamente que **este mensaje aparece incluso en un archivo HTML completamente vacío** (sin ningún CSS ni JavaScript propio), en dos navegadores distintos (Chrome y Edge) y con las extensiones del navegador desactivadas. Esto confirma que es un comportamiento estándar e inherente del navegador al servir archivos locales bajo `file://`, **no un error del código del dashboard**. La funcionalidad completa (las 3 gráficas, ambos selectores, modo oscuro, exportar CSV) opera correctamente a pesar de esta advertencia, la cual no es evitable desde el código de la página.
+
+> Durante este diagnóstico se crearon 2 archivos temporales fuera de la estructura oficial del repo: `generar_favicon.py` (para generar el ícono de la pestaña en base64) y `prueba.html` (un HTML vacío usado para descartar que el error viniera del código del dashboard). Ambos se eliminaron del proyecto una vez completado el diagnóstico, ya que no forman parte de la entrega ni del pipeline oficial.
+
 **Nota sobre nivel de detalle:** inicialmente el endpoint de resultados por municipio (`/json/ACT/{corporacion}/{codigo_municipio}.json`) solo traía el consolidado a nivel de todo el municipio. Investigando la estructura de `nomenclator.json` se descubrió el árbol territorial completo (Departamento → Municipio → Zona → Puesto de votación), lo que permitió obtener el desglose real por puesto individual (código de 13 dígitos), tal como lo requiere la tarea 3.1.
 
 **Nota sobre nombres de partidos:** de los 83 partidos con votos en los 4 municipios, solo se confirmó el nombre real de 6 (Alianza Verde, Pacto Histórico, Centro Democrático, Conservador — Cámara y Senado según corresponda) cruzando con la tabla de colores del PDF de la prueba. El resto quedó registrado con el código de partido como placeholder (`PARTIDO_{codpar}`), ya que el nomenclador nacional de partidos usa una numeración distinta (ID nacional) a la que aparece en los resultados por puesto (índice de circunscripción), y no había forma directa de cruzarlos con certeza para todos los casos.
@@ -82,6 +87,8 @@ Total: 99353 filas | 83 partidos distintos identificados
 **Sobre los colores de partido en el dashboard:** el PDF especifica colores obligatorios solo para 4 partidos (Alianza Verde, Pacto Histórico, Centro Democrático, Conservador). Estos se respetaron exactamente en el código (`COLORES_PARTIDO`), sin ninguna modificación, incluso al rediseñar la identidad visual general del dashboard. Los candidatos de partidos distintos a esos 4 se muestran en gris neutro para mantener el cumplimiento estricto de la paleta oficial sin inventar colores no especificados.
 
 **Sobre el rediseño visual del dashboard:** la primera versión del dashboard se construyó con un diseño funcional básico (tarjetas blancas, tipografía estándar) para validar que la lógica de datos, selectores y gráficas funcionara correctamente. Una vez confirmado que todo el contenido y los colores obligatorios de partido operaban bien, se rediseñó la identidad visual completa hacia un estilo de "boletín electoral oficial" (fondo oscuro tipo sala de resultados, tipografía serif/monoespaciada, acento dorado institucional), como mejora puramente estética orientada a dar una presentación más profesional. Ningún dato, cálculo, color de partido ni funcionalidad se modificó durante este cambio — únicamente la capa visual decorativa.
+
+**Sobre la carga de datos del dashboard sin servidor:** inicialmente el dashboard usaba `fetch("data.json")` para cargar los datos, lo cual requiere un servidor local (bloqueado por política CORS del navegador al abrir el archivo directamente). Se resolvió generando `dashboard/data.js` (mediante `dashboard/generar_data_js.py`), que declara los mismos datos como una variable de JavaScript (`const DASHBOARD_DATA = {...}`) cargada con una etiqueta `<script>` normal — esto permite que `index.html` funcione abriendo directamente con doble clic, sin servidor, tal como exige el PDF.
 
 ## Bonus implementados
 - Flag --preflight en el scraper: consulta la API real (vía nomenclador y peticiones por puesto) y cuenta las filas exactas que se insertarían, sin guardar nada en la base de datos (Reto 1.2, +3 pts)
