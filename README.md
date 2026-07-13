@@ -1,9 +1,9 @@
 # VILLAMIZAR MALDONADO — Prueba Técnica UTL Senado 2026
 
 ## Candidato
-Nombre: Frans Villamizar
+Nombre: Frans Sebastian Villamizar Maldonado
 Email: fransvillamizarma1409@gmail.com
-Fecha de entrega: [NN]
+Fecha de entrega: [12/07/2026]
 
 ## Instalación
 pip install -r requirements.txt
