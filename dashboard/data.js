@@ -1,0 +1,702 @@
+const DASHBOARD_DATA = {
+  "municipios": [
+    "DUITAMA",
+    "PAIPA",
+    "SOGAMOSO",
+    "TUNJA"
+  ],
+  "comparativo_ca": [
+    {
+      "municipio": "DUITAMA",
+      "votos": 48690
+    },
+    {
+      "municipio": "PAIPA",
+      "votos": 16907
+    },
+    {
+      "municipio": "SOGAMOSO",
+      "votos": 51445
+    },
+    {
+      "municipio": "TUNJA",
+      "votos": 73845
+    }
+  ],
+  "top_candidatos": {
+    "DUITAMA": [
+      {
+        "candidato": "HECTOR DAVID CHAPARRO CHAPARRO",
+        "codpar": 2,
+        "votos": 4559
+      },
+      {
+        "candidato": "JAIME RAUL SALAMANCA TORRES",
+        "codpar": 5,
+        "votos": 2198
+      },
+      {
+        "candidato": "HERNEL DAVID ORTEGA GOMEZ",
+        "codpar": 121,
+        "votos": 1558
+      },
+      {
+        "candidato": "RAMIRO BARRAGAN ADAME",
+        "codpar": 5,
+        "votos": 1518
+      },
+      {
+        "candidato": "YAMIT NOE HURTADO NEIRA",
+        "codpar": 5,
+        "votos": 1316
+      },
+      {
+        "candidato": "INGRID MARLEN SOGAMOSO ALFONSO",
+        "codpar": 121,
+        "votos": 1148
+      },
+      {
+        "candidato": "NANCY YANETH ZAPATA PACHON",
+        "codpar": 120,
+        "votos": 1136
+      },
+      {
+        "candidato": "JICLY ESGARDO MUTIS ISAZA",
+        "codpar": 10,
+        "votos": 1064
+      },
+      {
+        "candidato": "EDUAR ALEXIS TRIANA RINCON",
+        "codpar": 10,
+        "votos": 924
+      },
+      {
+        "candidato": "JOSE DARIO MAHECHA CASTILLO",
+        "codpar": 121,
+        "votos": 920
+      }
+    ],
+    "PAIPA": [
+      {
+        "candidato": "YAMIT NOE HURTADO NEIRA",
+        "codpar": 5,
+        "votos": 4756
+      },
+      {
+        "candidato": "JAIME RAUL SALAMANCA TORRES",
+        "codpar": 5,
+        "votos": 1465
+      },
+      {
+        "candidato": "HECTOR DAVID CHAPARRO CHAPARRO",
+        "codpar": 2,
+        "votos": 1393
+      },
+      {
+        "candidato": "EDUAR ALEXIS TRIANA RINCON",
+        "codpar": 10,
+        "votos": 869
+      },
+      {
+        "candidato": "WILDER IVAN SUESCA OCHOA",
+        "codpar": 121,
+        "votos": 729
+      },
+      {
+        "candidato": "RAMIRO BARRAGAN ADAME",
+        "codpar": 5,
+        "votos": 353
+      },
+      {
+        "candidato": "OSCAR LEONARDO AVILA ROMERO",
+        "codpar": 2,
+        "votos": 273
+      },
+      {
+        "candidato": "NANCY YANETH ZAPATA PACHON",
+        "codpar": 120,
+        "votos": 268
+      },
+      {
+        "candidato": "INGRID MARLEN SOGAMOSO ALFONSO",
+        "codpar": 121,
+        "votos": 195
+      },
+      {
+        "candidato": "HERNEL DAVID ORTEGA GOMEZ",
+        "codpar": 121,
+        "votos": 185
+      }
+    ],
+    "SOGAMOSO": [
+      {
+        "candidato": "HECTOR DAVID CHAPARRO CHAPARRO",
+        "codpar": 2,
+        "votos": 5568
+      },
+      {
+        "candidato": "RAMIRO BARRAGAN ADAME",
+        "codpar": 5,
+        "votos": 2771
+      },
+      {
+        "candidato": "DIANA PAOLA HERRERA NUÑEZ",
+        "codpar": 2,
+        "votos": 1962
+      },
+      {
+        "candidato": "JAIME RAUL SALAMANCA TORRES",
+        "codpar": 5,
+        "votos": 1757
+      },
+      {
+        "candidato": "NADIA ALEXANDRA CARREÑO AVELLA",
+        "codpar": 122,
+        "votos": 1736
+      },
+      {
+        "candidato": "FABIAN CAMILO ROJAS BARRERA",
+        "codpar": 122,
+        "votos": 1380
+      },
+      {
+        "candidato": "YURY NEILL DIAZ ARANGUREN",
+        "codpar": 120,
+        "votos": 1342
+      },
+      {
+        "candidato": "JAIRO ENRIQUE CASTIBLANCO PARRA",
+        "codpar": 120,
+        "votos": 1319
+      },
+      {
+        "candidato": "OSCAR LEONARDO AVILA ROMERO",
+        "codpar": 2,
+        "votos": 1237
+      },
+      {
+        "candidato": "YAMIT NOE HURTADO NEIRA",
+        "codpar": 5,
+        "votos": 1201
+      }
+    ],
+    "TUNJA": [
+      {
+        "candidato": "RAMIRO BARRAGAN ADAME",
+        "codpar": 5,
+        "votos": 4294
+      },
+      {
+        "candidato": "JAIME RAUL SALAMANCA TORRES",
+        "codpar": 5,
+        "votos": 3986
+      },
+      {
+        "candidato": "YAMIT NOE HURTADO NEIRA",
+        "codpar": 5,
+        "votos": 3933
+      },
+      {
+        "candidato": "INGRID MARLEN SOGAMOSO ALFONSO",
+        "codpar": 121,
+        "votos": 2903
+      },
+      {
+        "candidato": "FABIAN CAMILO ROJAS BARRERA",
+        "codpar": 122,
+        "votos": 2848
+      },
+      {
+        "candidato": "WILDER IVAN SUESCA OCHOA",
+        "codpar": 121,
+        "votos": 2756
+      },
+      {
+        "candidato": "HECTOR DAVID CHAPARRO CHAPARRO",
+        "codpar": 2,
+        "votos": 2341
+      },
+      {
+        "candidato": "JOSE DARIO MAHECHA CASTILLO",
+        "codpar": 121,
+        "votos": 2242
+      },
+      {
+        "candidato": "OSCAR LEONARDO AVILA ROMERO",
+        "codpar": 2,
+        "votos": 2180
+      },
+      {
+        "candidato": "JAIRO ENRIQUE CASTIBLANCO PARRA",
+        "codpar": 120,
+        "votos": 1911
+      }
+    ]
+  },
+  "partido_lider_se": {
+    "DUITAMA": {
+      "nombre": "PACTO HISTORICO (SE)",
+      "votos": 15423
+    },
+    "PAIPA": {
+      "nombre": "ALIANZA VERDE (SE)",
+      "votos": 4161
+    },
+    "SOGAMOSO": {
+      "nombre": "PACTO HISTORICO (SE)",
+      "votos": 13957
+    },
+    "TUNJA": {
+      "nombre": "PACTO HISTORICO (SE)",
+      "votos": 20651
+    }
+  },
+  "arrastre": {
+    "DUITAMA": [
+      {
+        "puesto": "0700079010005",
+        "votos_ca": 227,
+        "votos_se": 344,
+        "ratio": 1.515
+      },
+      {
+        "puesto": "0700079010004",
+        "votos_ca": 243,
+        "votos_se": 364,
+        "ratio": 1.498
+      },
+      {
+        "puesto": "0700079990010",
+        "votos_ca": 220,
+        "votos_se": 319,
+        "ratio": 1.45
+      },
+      {
+        "puesto": "0700079020002",
+        "votos_ca": 838,
+        "votos_se": 1200,
+        "ratio": 1.432
+      },
+      {
+        "puesto": "0700079990040",
+        "votos_ca": 5,
+        "votos_se": 7,
+        "ratio": 1.4
+      },
+      {
+        "puesto": "0700079020003",
+        "votos_ca": 610,
+        "votos_se": 834,
+        "ratio": 1.367
+      },
+      {
+        "puesto": "0700079010006",
+        "votos_ca": 366,
+        "votos_se": 495,
+        "ratio": 1.352
+      },
+      {
+        "puesto": "0700079010001",
+        "votos_ca": 364,
+        "votos_se": 472,
+        "ratio": 1.297
+      },
+      {
+        "puesto": "0700079020006",
+        "votos_ca": 323,
+        "votos_se": 415,
+        "ratio": 1.285
+      },
+      {
+        "puesto": "0700079990050",
+        "votos_ca": 15,
+        "votos_se": 19,
+        "ratio": 1.267
+      },
+      {
+        "puesto": "0700079900001",
+        "votos_ca": 439,
+        "votos_se": 554,
+        "ratio": 1.262
+      },
+      {
+        "puesto": "0700079020005",
+        "votos_ca": 435,
+        "votos_se": 543,
+        "ratio": 1.248
+      },
+      {
+        "puesto": "0700079990070",
+        "votos_ca": 62,
+        "votos_se": 77,
+        "ratio": 1.242
+      },
+      {
+        "puesto": "0700079010002",
+        "votos_ca": 439,
+        "votos_se": 539,
+        "ratio": 1.228
+      },
+      {
+        "puesto": "0700079020001",
+        "votos_ca": 760,
+        "votos_se": 924,
+        "ratio": 1.216
+      },
+      {
+        "puesto": "0700079010003",
+        "votos_ca": 310,
+        "votos_se": 371,
+        "ratio": 1.197
+      },
+      {
+        "puesto": "0700079990005",
+        "votos_ca": 39,
+        "votos_se": 45,
+        "ratio": 1.154
+      },
+      {
+        "puesto": "0700079020004",
+        "votos_ca": 369,
+        "votos_se": 416,
+        "ratio": 1.127
+      },
+      {
+        "puesto": "0700079990007",
+        "votos_ca": 220,
+        "votos_se": 221,
+        "ratio": 1.005
+      },
+      {
+        "puesto": "0700079990020",
+        "votos_ca": 52,
+        "votos_se": 51,
+        "ratio": 0.981
+      },
+      {
+        "puesto": "0700079020007",
+        "votos_ca": 165,
+        "votos_se": 159,
+        "ratio": 0.964
+      },
+      {
+        "puesto": "0700079980001",
+        "votos_ca": 6,
+        "votos_se": 2,
+        "ratio": 0.333
+      }
+    ],
+    "PAIPA": [
+      {
+        "puesto": "0700181990038",
+        "votos_ca": 246,
+        "votos_se": 155,
+        "ratio": 0.63
+      },
+      {
+        "puesto": "0700181010002",
+        "votos_ca": 963,
+        "votos_se": 602,
+        "ratio": 0.625
+      },
+      {
+        "puesto": "0700181020002",
+        "votos_ca": 1546,
+        "votos_se": 930,
+        "ratio": 0.602
+      },
+      {
+        "puesto": "0700181020001",
+        "votos_ca": 2042,
+        "votos_se": 1220,
+        "ratio": 0.597
+      },
+      {
+        "puesto": "0700181010001",
+        "votos_ca": 2017,
+        "votos_se": 1183,
+        "ratio": 0.587
+      },
+      {
+        "puesto": "0700181990015",
+        "votos_ca": 25,
+        "votos_se": 9,
+        "ratio": 0.36
+      },
+      {
+        "puesto": "0700181990001",
+        "votos_ca": 332,
+        "votos_se": 62,
+        "ratio": 0.187
+      }
+    ],
+    "SOGAMOSO": [
+      {
+        "puesto": "0700277990002",
+        "votos_ca": 15,
+        "votos_se": 35,
+        "ratio": 2.333
+      },
+      {
+        "puesto": "0700277990003",
+        "votos_ca": 12,
+        "votos_se": 19,
+        "ratio": 1.583
+      },
+      {
+        "puesto": "0700277990004",
+        "votos_ca": 12,
+        "votos_se": 14,
+        "ratio": 1.167
+      },
+      {
+        "puesto": "0700277010005",
+        "votos_ca": 276,
+        "votos_se": 320,
+        "ratio": 1.159
+      },
+      {
+        "puesto": "0700277020001",
+        "votos_ca": 752,
+        "votos_se": 817,
+        "ratio": 1.086
+      },
+      {
+        "puesto": "0700277020006",
+        "votos_ca": 513,
+        "votos_se": 553,
+        "ratio": 1.078
+      },
+      {
+        "puesto": "0700277020003",
+        "votos_ca": 722,
+        "votos_se": 754,
+        "ratio": 1.044
+      },
+      {
+        "puesto": "0700277010004",
+        "votos_ca": 684,
+        "votos_se": 708,
+        "ratio": 1.035
+      },
+      {
+        "puesto": "0700277020002",
+        "votos_ca": 921,
+        "votos_se": 953,
+        "ratio": 1.035
+      },
+      {
+        "puesto": "0700277020005",
+        "votos_ca": 656,
+        "votos_se": 675,
+        "ratio": 1.029
+      },
+      {
+        "puesto": "0700277010002",
+        "votos_ca": 553,
+        "votos_se": 560,
+        "ratio": 1.013
+      },
+      {
+        "puesto": "0700277020004",
+        "votos_ca": 642,
+        "votos_se": 642,
+        "ratio": 1.0
+      },
+      {
+        "puesto": "0700277980001",
+        "votos_ca": 3,
+        "votos_se": 3,
+        "ratio": 1.0
+      },
+      {
+        "puesto": "0700277900001",
+        "votos_ca": 485,
+        "votos_se": 479,
+        "ratio": 0.988
+      },
+      {
+        "puesto": "0700277990001",
+        "votos_ca": 51,
+        "votos_se": 49,
+        "ratio": 0.961
+      },
+      {
+        "puesto": "0700277020007",
+        "votos_ca": 165,
+        "votos_se": 156,
+        "ratio": 0.945
+      },
+      {
+        "puesto": "0700277010001",
+        "votos_ca": 896,
+        "votos_se": 835,
+        "ratio": 0.932
+      },
+      {
+        "puesto": "0700277010003",
+        "votos_ca": 728,
+        "votos_se": 623,
+        "ratio": 0.856
+      }
+    ],
+    "TUNJA": [
+      {
+        "puesto": "0700001030003",
+        "votos_ca": 205,
+        "votos_se": 243,
+        "ratio": 1.185
+      },
+      {
+        "puesto": "0700001020010",
+        "votos_ca": 275,
+        "votos_se": 313,
+        "ratio": 1.138
+      },
+      {
+        "puesto": "0700001020007",
+        "votos_ca": 671,
+        "votos_se": 762,
+        "ratio": 1.136
+      },
+      {
+        "puesto": "0700001030004",
+        "votos_ca": 821,
+        "votos_se": 917,
+        "ratio": 1.117
+      },
+      {
+        "puesto": "0700001020004",
+        "votos_ca": 514,
+        "votos_se": 573,
+        "ratio": 1.115
+      },
+      {
+        "puesto": "0700001020008",
+        "votos_ca": 397,
+        "votos_se": 434,
+        "ratio": 1.093
+      },
+      {
+        "puesto": "0700001010005",
+        "votos_ca": 715,
+        "votos_se": 778,
+        "ratio": 1.088
+      },
+      {
+        "puesto": "0700001010003",
+        "votos_ca": 493,
+        "votos_se": 521,
+        "ratio": 1.057
+      },
+      {
+        "puesto": "0700001030005",
+        "votos_ca": 327,
+        "votos_se": 345,
+        "ratio": 1.055
+      },
+      {
+        "puesto": "0700001010006",
+        "votos_ca": 1083,
+        "votos_se": 1142,
+        "ratio": 1.054
+      },
+      {
+        "puesto": "0700001010002",
+        "votos_ca": 591,
+        "votos_se": 619,
+        "ratio": 1.047
+      },
+      {
+        "puesto": "0700001030002",
+        "votos_ca": 921,
+        "votos_se": 949,
+        "ratio": 1.03
+      },
+      {
+        "puesto": "0700001030001",
+        "votos_ca": 904,
+        "votos_se": 914,
+        "ratio": 1.011
+      },
+      {
+        "puesto": "0700001020002",
+        "votos_ca": 651,
+        "votos_se": 656,
+        "ratio": 1.008
+      },
+      {
+        "puesto": "0700001010001",
+        "votos_ca": 986,
+        "votos_se": 990,
+        "ratio": 1.004
+      },
+      {
+        "puesto": "0700001980001",
+        "votos_ca": 5,
+        "votos_se": 5,
+        "ratio": 1.0
+      },
+      {
+        "puesto": "0700001900001",
+        "votos_ca": 911,
+        "votos_se": 908,
+        "ratio": 0.997
+      },
+      {
+        "puesto": "0700001020001",
+        "votos_ca": 1230,
+        "votos_se": 1224,
+        "ratio": 0.995
+      },
+      {
+        "puesto": "0700001030006",
+        "votos_ca": 901,
+        "votos_se": 888,
+        "ratio": 0.986
+      },
+      {
+        "puesto": "0700001010004",
+        "votos_ca": 953,
+        "votos_se": 936,
+        "ratio": 0.982
+      },
+      {
+        "puesto": "0700001020003",
+        "votos_ca": 627,
+        "votos_se": 612,
+        "ratio": 0.976
+      },
+      {
+        "puesto": "0700001020009",
+        "votos_ca": 126,
+        "votos_se": 122,
+        "ratio": 0.968
+      },
+      {
+        "puesto": "0700001020005",
+        "votos_ca": 903,
+        "votos_se": 865,
+        "ratio": 0.958
+      },
+      {
+        "puesto": "0700001020006",
+        "votos_ca": 564,
+        "votos_se": 537,
+        "ratio": 0.952
+      },
+      {
+        "puesto": "0700001020011",
+        "votos_ca": 9,
+        "votos_se": 8,
+        "ratio": 0.889
+      },
+      {
+        "puesto": "0700001990021",
+        "votos_ca": 53,
+        "votos_se": 35,
+        "ratio": 0.66
+      }
+    ]
+  }
+};

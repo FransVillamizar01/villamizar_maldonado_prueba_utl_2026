@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Boletín Electoral — Boyacá 2026</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2214%22 fill=%22%2312161C%22/><text x=%2250%22 y=%2266%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23C89B3C%22 font-family=%22serif%22>B</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="data.js"></script>
 <style>
   :root {
     --ink: #12161C;
@@ -232,17 +234,14 @@ let comparativoChartInstance = null;
 let municipioChartInstance = null;
 let arrastreChartInstance = null;
 
-fetch("data.json")
-  .then(r => r.json())
-  .then(data => {
-    dashboardData = data;
-    document.getElementById("loadingMsg").style.display = "none";
-    renderComparativo(data);
-    setupSelectores(data);
-  })
-  .catch(err => {
-    document.getElementById("loadingMsg").textContent = "Error cargando data.json: " + err;
-  });
+try {
+  dashboardData = DASHBOARD_DATA;
+  document.getElementById("loadingMsg").style.display = "none";
+  renderComparativo(dashboardData);
+  setupSelectores(dashboardData);
+} catch (err) {
+  document.getElementById("loadingMsg").textContent = "Error cargando datos: " + err;
+}
 
 function renderComparativo(data) {
   const ctx = document.getElementById("comparativoChart");

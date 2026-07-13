@@ -12,6 +12,8 @@ Python 3.x (verificar version con: python --version)
 ## Pipeline de ejecución
 python scraper/scraper.py
 python db/etl.py
+python dashboard/export_data.py
+python dashboard/generar_data_js.py
 python outputs/generar_manifest.py
 
 ## API
